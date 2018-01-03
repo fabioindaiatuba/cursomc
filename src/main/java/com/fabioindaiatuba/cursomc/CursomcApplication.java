@@ -19,6 +19,6 @@ public class CursomcApplication implements CommandLineRunner {
 
 	@Override
 	public void run(String... arg0) throws Exception {
-		cloudinaryService.uploadFile("C:\\Fabio\\palmeiras.jpg");
+		//cloudinaryService.uploadFileteste("C:\\Fabio\\palmeiras.jpg");
 	}
 }
