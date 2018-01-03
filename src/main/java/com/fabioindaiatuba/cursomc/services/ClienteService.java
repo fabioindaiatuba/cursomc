@@ -114,7 +114,18 @@ public class ClienteService {
 	}
 	
 	public URI uploadProfilePicture(MultipartFile multipartFile) {
-		return cloudinaryService.uploadFile(multipartFile);
+		UserSS user = UserService.authenticated();
+		
+		if(user == null || !user.hasRole(Perfil.ADMIN)) {
+			throw new AuthorizationException("Acesso negado");
+		}
+		
+		URI uri = cloudinaryService.uploadFile(multipartFile);
+		
+		Cliente cli = repo.findOne(user.getId());
+		cli.setImageUrl(uri.toString());
+		repo.save(cli);
+		return uri;
 	}
 	
 	private void updateData(Cliente newObj, Cliente obj) {

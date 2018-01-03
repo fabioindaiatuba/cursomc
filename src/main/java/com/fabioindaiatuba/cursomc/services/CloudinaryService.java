@@ -16,6 +16,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.cloudinary.Cloudinary;
 import com.cloudinary.utils.ObjectUtils;
+import com.fabioindaiatuba.cursomc.services.exceptions.FileException;
 
 @Service
 public class CloudinaryService {
@@ -61,11 +62,15 @@ public class CloudinaryService {
 			LOG.info("Upload Finalizado");
 			return new URI(cloudinary.url().generate(bucketName+'/'+arquivo_renomeado.getName()));
 			
+		} catch (RuntimeException e) {
+			LOG.info("Cloudinary RuntimeException: "+ e.getMessage());
+			throw new FileException("Cloudinary RuntimeException: "+e.getMessage());
 		} catch (IOException e) {
-			throw new RuntimeException("Cloudinary IOException: "+e.getMessage());
+			LOG.info("Cloudinary IOException: "+ e.getMessage());
+			throw new FileException("Cloudinary IOException: "+e.getMessage());
 		} catch (URISyntaxException e) {
-			throw new RuntimeException("Cloudinary URISyntaxException: "+e.getMessage());
+			LOG.info("Cloudinary URISyntaxException: "+ e.getMessage());
+			throw new FileException("Cloudinary URISyntaxException: "+e.getMessage());
 		}
 	}
-	
 }
