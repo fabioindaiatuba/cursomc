@@ -56,6 +56,13 @@ public class CloudinaryService {
 			/*
 			 * Doc coom opçoes do Cloudinary
 			 * https://cloudinary.com/documentation/image_upload_api_reference#upload
+			 * 
+			 * pametros options:
+			 * folder : setar a pasta
+			 * access_mode : deixar acesso publico pela url
+			 * unique_filename: false para sobrepor o arquivo
+			 * invalidate: true para limpar o CDN de imagens e ficar como v1 as vezes demora um pouco ate 1 hora
+			 * 
 			 */
 			
 			Map opcoes = ObjectUtils.asMap(
@@ -63,7 +70,7 @@ public class CloudinaryService {
 					"access_mode","public",
 					"use_filename", true, 
 					"unique_filename", false,
-					"version", 1
+					"invalidate", true
 			);
 			LOG.info("Iniciando Upload");
 			cloudinary.uploader().upload(arquivo_renomeado, opcoes);

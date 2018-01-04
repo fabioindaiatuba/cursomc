@@ -80,11 +80,18 @@
 		    <version>1.17.0</version>
 		</dependency>
 		
-		<!-- Cloudinary - Substituto ao amazon -->
+		<!-- Commons IO - manipular arquivos -->
 		<dependency>
 			<groupId>commons-io</groupId>
 		    <artifactId>commons-io</artifactId>
 		    <version>LATEST</version>
+		</dependency>
+		
+		<!-- Manipular e Redimensionar imagens -->
+		<dependency>
+			<groupId>org.imgscalr</groupId>
+		    <artifactId>imgscalr-lib</artifactId>
+		    <version>4.2</version>
 		</dependency>
 	
 	</dependencies>
