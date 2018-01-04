@@ -3,10 +3,12 @@ package com.fabioindaiatuba.cursomc.services;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.Map;
 
+import org.apache.commons.io.IOUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,18 +34,23 @@ public class CloudinaryService {
 		String fileName = multipartFile.getOriginalFilename();
 		String contentType = multipartFile.getContentType();
 		
-		return uploadFile(multipartFile, fileName, contentType);	
+		try {
+			return uploadFile(multipartFile.getInputStream(), fileName, contentType);
+		} catch (IOException e) {
+			LOG.info("Cloudinary IOException: "+ e.getMessage());
+			throw new FileException("Cloudinary IOException: "+e.getMessage());
+		}	
 	}
 	
 	@SuppressWarnings("rawtypes")
-	public URI uploadFile(MultipartFile multipartFile, String fileName, String contentType) {
+	public URI uploadFile(InputStream inputStream, String fileName, String contentType) {
 		
 		File arquivo_renomeado = new File(fileName);
 		try {
-			arquivo_renomeado.createNewFile();
+			//arquivo_renomeado.createNewFile();
 		
 			FileOutputStream fos = new FileOutputStream(arquivo_renomeado); 
-			fos.write(multipartFile.getBytes());
+			fos.write(IOUtils.toByteArray(inputStream));
 			fos.close(); 
 		    
 			/*
@@ -55,12 +62,15 @@ public class CloudinaryService {
 					"folder", bucketName, 
 					"access_mode","public",
 					"use_filename", true, 
-					"unique_filename", false
+					"unique_filename", false,
+					"version", 1
 			);
 			LOG.info("Iniciando Upload");
 			cloudinary.uploader().upload(arquivo_renomeado, opcoes);
 			LOG.info("Upload Finalizado");
-			return new URI(cloudinary.url().generate(bucketName+'/'+arquivo_renomeado.getName()));
+			URI uri = new URI(cloudinary.url().version("1").generate(bucketName+'/'+arquivo_renomeado.getName()));
+			arquivo_renomeado.delete();
+			return uri;
 			
 		} catch (RuntimeException e) {
 			LOG.info("Cloudinary RuntimeException: "+ e.getMessage());
